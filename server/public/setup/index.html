@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Set up Species Specific VoIP (The Isle Evrima)</title>
+<link rel="stylesheet" href="/shared/theme.css">
+<link rel="stylesheet" href="setup.css">
+<script src="/shared/theme.js"></script>
+</head>
+<body>
+<main class="setup">
+  <header>
+    <h1>Set up Species Specific VoIP (The Isle Evrima)</h1>
+    <p class="muted">Answer these once. Everything else, like talk rules and species, is changed later in the admin panel.</p>
+  </header>
+
+  <form id="form" novalidate>
+    <section>
+      <h2>Your server</h2>
+      <div><label for="name">Name shown to players</label><input id="name" type="text" maxlength="80" value="My Isle Server"></div>
+    </section>
+
+    <section>
+      <h2>How players reach it</h2>
+      <fieldset>
+        <legend>How is the connection secured?</legend>
+        <label class="check"><input type="radio" name="mode" value="certificate" checked> I have a secure certificate for my voice address</label>
+        <label class="check"><input type="radio" name="mode" value="auto"> I don't have one: get a free certificate automatically (HTTPS)</label>
+        <label class="check"><input type="radio" name="mode" value="proxy"> Another program in front (a reverse proxy) already provides HTTPS</label>
+        <details id="test-fold">
+          <summary>Testing without a certificate</summary>
+          <label class="check"><input type="radio" name="mode" value="test"> Only testing on this computer, with up to 30 whitelisted players</label>
+        </details>
+      </fieldset>
+      <p class="notice" data-for="certificate">Only certificates from publicly trusted certificate authorities are accepted, free or paid, the same ones web browsers trust. Self-signed certificates are refused. The server guide lists providers.</p>
+      <p class="notice" data-for="auto">The server gets a free certificate from Let's Encrypt for your voice address and renews it by itself. To prove the address is yours, Let's Encrypt briefly connects to this server on <strong>port 80</strong>, so port 80 must be open to the internet now and at each renewal. Saving takes up to a minute.</p>
+      <p id="test-note" class="notice" hidden>Testing mode works on this computer only and does not prove who a player is. It is limited to 30 players, and only the SteamIDs you whitelist below can connect. Never use it for a public server. To leave it later, run setup again.</p>
+
+      <div data-for="certificate auto proxy">
+        <label for="address">Voice address players will type (a domain name pointing at this server)</label>
+        <input id="address" type="text" placeholder="voice.example.com" autocomplete="off">
+      </div>
+      <div class="pair">
+        <div>
+          <label for="port">Voice port</label>
+          <input id="port" type="number" min="1" max="65535" value="7777">
+        </div>
+        <div data-for="proxy">
+          <label for="publicPort">Port players use on the proxy</label>
+          <input id="publicPort" type="number" min="1" max="65535" value="443">
+        </div>
+      </div>
+      <p class="muted small">Keep 7777 if that is your game port: the game uses it over UDP and voice uses it over TCP, so they share the number. Players' clients assume this port unless you tell them another.</p>
+
+      <div data-for="certificate auto proxy">
+        <label for="publicIp">This server's public IP address</label>
+        <div class="with-button"><input id="publicIp" type="text" placeholder="203.0.113.10" autocomplete="off"><button class="btn" type="button" id="detect">Look it up</button></div>
+        <p class="muted small" id="detect-note">"Look it up" asks the public service api.ipify.org what address this server appears as.</p>
+      </div>
+
+      <div data-for="certificate">
+        <label for="cert">Certificate file (fullchain.pem or .crt)</label>
+        <div class="with-button"><input id="cert" type="text" placeholder="C:/certs/fullchain.pem" autocomplete="off"><button class="btn" type="button" data-pick="cert" hidden>Browse</button></div>
+      </div>
+      <div data-for="certificate">
+        <label for="key">Private key file (privkey.pem or .key)</label>
+        <div class="with-button"><input id="key" type="text" placeholder="C:/certs/privkey.pem" autocomplete="off"><button class="btn" type="button" data-pick="key" hidden>Browse</button></div>
+      </div>
+
+      <div data-for="auto">
+        <label for="email">Email address for Let's Encrypt to contact you about the certificate (optional)</label>
+        <input id="email" type="text" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <label class="check" data-for="auto"><input type="checkbox" id="agree"> <span>I agree to the <a href="https://letsencrypt.org/repository/" target="_blank" rel="noopener">Let's Encrypt Subscriber Agreement</a></span></label>
+
+      <div data-for="test">
+        <label for="whitelist">Whitelist: the SteamID64 of each player allowed to connect, one per line (up to 30)</label>
+        <textarea id="whitelist" rows="4" placeholder="76561198000000001"></textarea>
+      </div>
+
+      <details>
+        <summary>Audio port</summary>
+        <label for="audioPort">Port used for the audio itself (UDP and TCP). Players never type this one.</label>
+        <input id="audioPort" type="number" min="1" max="65535" value="40000">
+      </details>
+    </section>
+
+    <section>
+      <h2>Admin password</h2>
+      <div><label for="password">Password for the admin panel (10 characters or more)</label><input id="password" type="password" autocomplete="new-password" minlength="10"></div>
+      <div><label for="password2">Type it again</label><input id="password2" type="password" autocomplete="new-password"></div>
+    </section>
+
+    <p id="error" class="notice error" hidden role="alert"></p>
+    <button class="btn primary" id="save">Save and start the voice server</button>
+  </form>
+
+  <section id="done" hidden>
+    <h2>The voice server is running</h2>
+    <p id="done-https" class="notice" hidden></p>
+    <div id="done-real">
+      <p>Two things left to do outside this page:</p>
+      <ol>
+        <li><strong>Open these ports</strong> in this computer's firewall, and in your router or hosting control panel if you have one: <span id="done-ports"></span>. Windows may ask twice whether to allow access: once for this server app and once for "mediasoup-worker", the part that relays the audio. Choose Allow for both.</li>
+        <li><strong>Tell your players</strong> the voice address <strong id="done-address"></strong><span id="done-port-note"></span>.</li>
+      </ol>
+      <p>Next, open the admin panel to connect the game server (Species check) and set your talk rules.</p>
+    </div>
+    <div id="done-test" hidden>
+      <p>Testing mode is on. The voice server only answers on this computer, so there are no ports to open and nothing to give to players.</p>
+      <ol>
+        <li>Open the player client on this computer.</li>
+        <li>Type <strong id="done-test-address"></strong> as the voice server address<span id="done-test-port"></span>.</li>
+        <li>Sign in with one of the SteamIDs you whitelisted.</li>
+      </ol>
+      <p>The client will show "Not secure", which is expected in testing mode. To set the server up for real players later, use "Run setup again" in the tray menu.</p>
+    </div>
+    <div class="row">
+      <a class="btn primary" id="done-local">Open the admin panel</a>
+    </div>
+    <p class="muted small" id="done-public-line">From another computer, the admin panel is at <span id="done-public"></span>.</p>
+  </section>
+</main>
+<div class="version" id="version"></div>
+<script src="setup.js"></script>
+</body>
+</html>

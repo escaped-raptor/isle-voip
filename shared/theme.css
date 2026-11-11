@@ -1,0 +1,106 @@
+/* Shared look for the admin panel and the player client.
+   Every colour comes from variables that shared/theme.js sets from the
+   person's chosen harmony (--c1 … --c5) and background mode. */
+:root {
+  --c1: hsl(34 78% 58%); --on-c1: hsl(34 40% 8%); --c1-text: hsl(34 78% 66%);
+  --c2: hsl(154 78% 58%); --on-c2: hsl(154 40% 8%); --c2-text: hsl(154 78% 66%);
+  --c3: hsl(274 78% 58%); --on-c3: #fff; --c3-text: hsl(274 78% 66%);
+  --c4: var(--c1); --on-c4: var(--on-c1); --c4-text: var(--c1-text);
+  --c5: var(--c2); --on-c5: var(--on-c2); --c5-text: var(--c2-text);
+  --bg: hsl(34 17% 8%); --surface: hsl(34 17% 12%); --surface-2: hsl(34 17% 17%);
+  --line: hsl(34 17% 26%); --text: hsl(34 14% 92%); --muted: hsl(34 10% 66%);
+  --display: Bahnschrift, "DIN Alternate", "Avenir Next Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
+  --body: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --radius: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  margin: 0; min-height: 100vh;
+  background: var(--bg); color: var(--text);
+  font: 1rem/1.5 var(--body);
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--c2-text); }
+.muted { color: var(--muted); }
+.small { font-size: 0.875rem; }
+[hidden] { display: none !important; }
+
+:focus-visible { outline: 2px solid var(--c1-text); outline-offset: 2px; }
+
+label, .label { font-size: 0.875rem; color: var(--muted); display: block; }
+input[type="text"], input[type="password"], input[type="number"], select, textarea {
+  width: 100%; padding: 0.5rem 0.65rem;
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  font: inherit;
+}
+input[type="range"] { width: 100%; accent-color: var(--c1); }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--c1); width: 1.05rem; height: 1.05rem; margin: 0; }
+.check { display: flex; gap: 0.55rem; align-items: center; color: var(--text); font-size: 1rem; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.5rem 0.95rem; border-radius: var(--radius);
+  border: 1px solid var(--line); background: var(--surface-2); color: var(--text);
+  font: 600 0.95rem var(--body); cursor: pointer; white-space: nowrap;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--c1); color: var(--on-c1); border-color: transparent; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.quiet { background: transparent; }
+.btn.danger { color: hsl(4 80% 68%); background: transparent; }
+:root[data-mode="light"] .btn.danger { color: hsl(4 70% 40%); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.25rem; }
+.centered { display: grid; place-items: center; padding: 1.5rem; }
+.narrow { width: min(26rem, 100%); display: grid; gap: 0.9rem; }
+
+.chip {
+  display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px;
+  font-size: 0.8rem; font-weight: 600; border: 1px solid currentColor;
+}
+.chip.carnivore { color: var(--c1-text); }
+.chip.herbivore { color: var(--c2-text); }
+.chip.omnivore { color: var(--c3-text); }
+
+.segmented { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.seg { padding: 0.4rem 0.9rem; background: transparent; color: var(--text); border: 0; font: inherit; cursor: pointer; }
+.seg + .seg { border-left: 1px solid var(--line); }
+.seg[aria-pressed="true"] { background: var(--c1); color: var(--on-c1); }
+
+.notice { padding: 0.65rem 0.85rem; border-radius: var(--radius); border-left: 4px solid var(--c4-text); background: var(--surface-2); }
+.notice.error { border-left-color: hsl(4 80% 60%); }
+
+/* version number, bottom left of every screen */
+.version { position: fixed; left: 0.5rem; bottom: 0.4rem; padding: 0.1rem 0.45rem; border-radius: var(--radius); background: var(--bg); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; z-index: 5; }
+
+/* ---- colour wheel ---- */
+.tw { display: grid; grid-template-columns: minmax(200px, 280px) minmax(220px, 1fr); gap: 2rem; align-items: start; }
+@media (max-width: 640px) { .tw { grid-template-columns: 1fr; } }
+.tw-wheel { position: relative; aspect-ratio: 1; width: 100%; touch-action: none; cursor: crosshair; }
+.tw-wheel canvas, .tw-wheel svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tw-wheel svg { pointer-events: none; }
+.tw-wheel line { stroke: rgba(255, 255, 255, 0.75); stroke-width: 1.5; }
+.tw-wheel circle { stroke: #fff; stroke-width: 2; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)); }
+.tw-handle {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; padding: 0;
+  border-radius: 50%; border: 3px solid #fff; cursor: grab;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.55), 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+.tw-handle:active { cursor: grabbing; }
+.tw-controls { display: grid; gap: 0.4rem; }
+.tw-controls > label, .tw-controls > .label { margin-top: 0.6rem; }
+.tw-controls > .btn { margin-top: 1rem; justify-self: start; }
+.tw-swatches { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tw-swatch { padding: 0.9rem 0.6rem 0.35rem; min-width: 4.6rem; border-radius: var(--radius); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .seg { transition: filter 0.12s, border-color 0.12s, background-color 0.12s; }
+}

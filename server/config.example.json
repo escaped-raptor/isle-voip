@@ -1,0 +1,16 @@
+{
+  "name": "My Isle Server",
+  "port": 7777,
+  "publicUrl": "https://voice.example.com:7777",
+  "tls": {
+    "cert": "/etc/letsencrypt/live/voice.example.com/fullchain.pem",
+    "key": "/etc/letsencrypt/live/voice.example.com/privkey.pem"
+  },
+  "rtc": {
+    "announcedAddress": "203.0.113.10",
+    "port": 40000
+  },
+  "authMode": "steam",
+  "trustProxy": false,
+  "dataDir": "./data"
+}

@@ -1,0 +1,18 @@
+.setup { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; display: grid; gap: 1.75rem; }
+.setup header { display: grid; gap: 0.5rem; }
+.setup form, .setup section { display: grid; gap: 0.9rem; }
+.setup form { gap: 2rem; }
+.setup section { padding-top: 1.25rem; border-top: 1px solid var(--line); }
+fieldset { border: 1px solid var(--line); border-radius: 10px; padding: 0.8rem 1rem; margin: 0; display: grid; gap: 0.5rem; }
+legend { padding: 0 0.4rem; color: var(--muted); font-size: 0.875rem; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.with-button { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; }
+details summary { cursor: pointer; color: var(--muted); }
+#test-fold[open] { gap: 0.5rem; padding-top: 0.3rem; }
+textarea { font: inherit; resize: vertical; }
+details[open] { display: grid; gap: 0.4rem; }
+.row { display: flex; gap: 0.75rem; }
+a.btn { text-decoration: none; }
+#save { justify-self: start; }
+ol { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.6rem; max-width: 68ch; }
+@media (max-width: 520px) { .pair { grid-template-columns: 1fr; } }

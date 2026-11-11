@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Species Specific VoIP (The Isle Evrima) admin</title>
+<link rel="stylesheet" href="/shared/theme.css">
+<link rel="stylesheet" href="admin.css">
+<script src="/shared/theme.js"></script>
+</head>
+<body>
+
+<div id="login" class="centered" hidden>
+  <form class="panel narrow" id="login-form">
+    <h1>Species Specific VoIP (The Isle Evrima)</h1>
+    <p class="muted">Sign in to change who can talk to whom on your server.</p>
+    <div>
+      <label for="login-pw">Admin password</label>
+      <input id="login-pw" type="password" autocomplete="current-password" required>
+    </div>
+    <p id="login-err" class="notice error" hidden></p>
+    <button class="btn primary">Sign in</button>
+  </form>
+</div>
+
+<div id="app" class="shell" hidden>
+  <nav class="rail" aria-label="Sections">
+    <div class="brand">Species Specific VoIP (The Isle Evrima)<span id="server-name"></span></div>
+    <button data-tab="players">Players</button>
+    <button data-tab="rules">Talk rules</button>
+    <button data-tab="species">Species</button>
+    <button data-tab="check">Species check</button>
+    <button data-tab="call">Call key</button>
+    <button data-tab="look">Colours</button>
+    <button data-tab="server">Server</button>
+    <button id="signout" class="signout">Sign out</button>
+  </nav>
+
+  <main id="main">
+    <section data-page="players">
+      <h1>Players</h1>
+      <p class="muted" id="players-summary"></p>
+      <div id="unknown"></div>
+      <div class="table-wrap"><table id="players-table">
+        <thead><tr><th>Player</th><th>Species</th><th>Voice group</th><th>Can hear</th><th>Position (m)</th><th>SteamID</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <p id="players-empty" class="muted">Nobody is connected to voice right now.</p>
+      <div id="measure" class="stack" hidden>
+        <h2>Measure a distance</h2>
+        <div class="row">
+          <select id="measure-a" aria-label="First player"></select>
+          <span>to</span>
+          <select id="measure-b" aria-label="Second player"></select>
+          <output id="measure-out"></output>
+        </div>
+      </div>
+    </section>
+
+    <section data-page="rules">
+      <h1>Talk rules</h1>
+      <p class="muted">Two players can talk only when both of their rules allow it, so nobody is heard by someone they can't hear back.</p>
+      <div id="rules-list" class="stack"></div>
+      <h2>Hearing range</h2>
+      <p class="muted">Players only hear each other when their dinosaurs are close together in the game. The game doesn't publish how far the F call carries, so the starting value of 100 metres is an estimate. To set it for your server, stand two players at the edge of where the F call can be heard and use "Measure a distance" on the Players page.</p>
+      <label class="check"><input type="checkbox" id="px-on"> Only let players hear each other when they are in range</label>
+      <div class="grid-3">
+        <div><label for="px-range">Range (metres)</label><input id="px-range" type="number" min="1" max="100000"></div>
+        <div><label for="px-update">Update positions every (seconds)</label><input id="px-update" type="number" min="1" max="60"></div>
+        <div><label for="px-units">Game units per metre</label><input id="px-units" type="number" min="0.001" step="any"></div>
+      </div>
+      <label class="check"><input type="checkbox" id="px-fade"> Make voices quieter towards the edge of the range</label>
+      <p id="px-note" class="notice" hidden></p>
+      <h2>Voice groups</h2>
+      <p class="muted">The game doesn't share its in-game groups, so players form a voice group in the client with a 6-letter code. Only species allowed to talk to each other can share a group.</p>
+      <div class="field-row">
+        <label for="max-size">Largest group allowed (0 for no limit)</label>
+        <input id="max-size" type="number" min="0" max="500">
+      </div>
+    </section>
+
+    <section data-page="species">
+      <h1>Species</h1>
+      <p class="muted">Each species follows its category's rule unless you give it its own.</p>
+      <div id="species-lists"></div>
+    </section>
+
+    <section data-page="check">
+      <h1>Species check</h1>
+      <p class="muted">Every player's species is checked when they join voice and again on a timer, so the rules still fit after a death or respawn.</p>
+      <fieldset class="stack">
+        <legend>Where to check</legend>
+        <label class="check"><input type="radio" name="src" value="rcon"> Evrima server, over RCON (recommended)</label>
+        <label class="check"><input type="radio" name="src" value="legacy"> Legacy player save files</label>
+        <label class="check"><input type="radio" name="src" value="manual"> Players pick their own species (testing only, not secure)</label>
+      </fieldset>
+      <div id="src-rcon" class="grid-2">
+        <div><label for="rcon-host">RCON address</label><input id="rcon-host" type="text"></div>
+        <div><label for="rcon-port">RCON port</label><input id="rcon-port" type="number" min="1" max="65535"></div>
+        <div class="span-2"><label for="rcon-pw">RCON password</label><input id="rcon-pw" type="password" autocomplete="off"></div>
+      </div>
+      <div id="src-legacy">
+        <label for="legacy-dir">Folder holding the &lt;SteamID64&gt;.json save files</label>
+        <input id="legacy-dir" type="text" placeholder="…/TheIsle/Saved/Databases/Survival/Players">
+      </div>
+      <div class="field-row">
+        <label for="recheck">Check again every (seconds)</label>
+        <input id="recheck" type="number" min="5" max="600">
+      </div>
+      <div class="row">
+        <button class="btn" id="test-src">Test connection</button>
+        <span class="muted small">Tests the saved settings. Save changes first.</span>
+      </div>
+      <pre id="test-out" hidden></pre>
+    </section>
+
+    <section data-page="call">
+      <h1>Call key</h1>
+      <p class="muted">When a player starts talking, their client can press the game's call key for them (F by default), so their dinosaur calls like it does with the game's own voice chat. Each player can rebind the key in their client to match their game.</p>
+      <label class="check"><input type="checkbox" id="call-on"> Allow players to use the call key press</label>
+      <p class="notice">This only allows it. In each player's client the call key press is off until they turn it on themselves, because it sends a key press into the game and has not been tested with The Isle's anti-cheat.</p>
+    </section>
+
+    <section data-page="look">
+      <h1>Colours</h1>
+      <p class="muted">Drag the circle on the wheel to pick a base colour, then choose a harmony of 2 to 5 colours. This is saved in this browser only.</p>
+      <div id="wheel" class="panel"></div>
+    </section>
+
+    <section data-page="server">
+      <h1>Server</h1>
+      <div class="panel stack" id="tell">
+        <h2>What to give your players</h2>
+        <p class="muted">Players type these into the client. It assumes the voice port is the same number as the game port (7777) unless they enter a different one.</p>
+        <dl class="facts">
+          <dt>Voice server address</dt><dd id="tell-address"></dd>
+          <dt>Port</dt><dd id="tell-port"></dd>
+        </dl>
+        <p id="tell-note" class="notice"></p>
+      </div>
+      <div class="stack" id="https-box">
+        <h2>HTTPS</h2>
+        <p id="https-status" class="notice"></p>
+      </div>
+      <div class="stack" id="testing-box" hidden>
+        <h2>Testing whitelist</h2>
+        <p class="muted">This server is in testing mode: at most 30 players, and only these SteamIDs can connect. One SteamID64 per line.</p>
+        <textarea id="whitelist" rows="6" aria-label="Whitelisted SteamIDs"></textarea>
+      </div>
+      <form id="pw-form" class="narrow">
+        <h2>Change admin password</h2>
+        <div><label for="pw-cur">Current password</label><input id="pw-cur" type="password" autocomplete="current-password" required></div>
+        <div><label for="pw-new">New password (10 characters or more)</label><input id="pw-new" type="password" autocomplete="new-password" minlength="10" required></div>
+        <button class="btn">Change password</button>
+        <p id="pw-msg" class="notice" hidden></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="savebar" class="savebar" hidden role="status">
+    <span id="save-msg">You have unsaved changes.</span>
+    <button class="btn quiet" id="discard">Discard</button>
+    <button class="btn primary" id="save">Save changes</button>
+  </div>
+</div>
+
+<div class="version" id="version"></div>
+<script src="admin.js"></script>
+</body>
+</html>

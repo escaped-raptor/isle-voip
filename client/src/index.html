@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https: wss: http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*; media-src 'self' blob: mediastream:; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<link rel="icon" href="data:,">
+<title>Species Specific VoIP (The Isle Evrima)</title>
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="client.css">
+<script src="theme.js"></script>
+</head>
+<body>
+
+<div id="connect" class="centered">
+  <form class="panel narrow" id="connect-form">
+    <h1>Species Specific VoIP (The Isle Evrima)</h1>
+    <p class="muted">Voice chat that follows your server's species rules.</p>
+    <div id="server-field" class="server-row">
+      <div><label for="server">Voice server address</label><input id="server" type="text" placeholder="voice.example.com" autocomplete="url" list="recent-servers" required></div>
+      <div><label for="port">Port</label><input id="port" type="number" min="1" max="65535" placeholder="7777"></div>
+    </div>
+    <p class="muted small">Leave the port empty if voice uses the same port as the game (7777). Otherwise use the port your server's admins gave you.</p>
+    <datalist id="recent-servers"></datalist>
+    <div id="dev-field" hidden>
+      <label for="steamid">SteamID64 (this server is in test mode)</label>
+      <input id="steamid" type="text" inputmode="numeric" pattern="\d{17}" placeholder="17 digits">
+    </div>
+    <label class="check" id="stay-field"><input type="checkbox" id="stay"> Stay signed in on this computer</label>
+    <p id="connect-err" class="notice" hidden></p>
+    <button class="btn primary" id="connect-btn">Sign in with Steam</button>
+    <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    <p class="muted small">You sign in on Steam's own page. This app never sees your Steam password.</p>
+  </form>
+  <div class="panel narrow" id="wait" hidden>
+    <h1>Species Specific VoIP (The Isle Evrima)</h1>
+    <p id="wait-text" aria-live="polite"></p>
+    <div class="row">
+      <button class="btn primary" type="button" id="wait-now">Check now</button>
+      <button class="btn quiet" type="button" id="wait-stop">Stop checking</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header class="top">
+    <div>
+      <strong>Species Specific VoIP (The Isle Evrima)</strong>
+      <span id="server-name" class="muted small"></span>
+      <span id="conn" class="muted small"></span>
+      <span id="security" class="badge" hidden></span>
+    </div>
+    <nav class="segmented" aria-label="Sections">
+      <button class="seg" data-tab="voice" aria-pressed="true">Voice</button>
+      <button class="seg" data-tab="settings" aria-pressed="false">Settings</button>
+      <button class="seg" data-tab="look" aria-pressed="false">Colours</button>
+    </nav>
+    <button class="btn quiet" id="disconnect">Disconnect</button>
+  </header>
+
+  <p id="insecure" class="insecure" role="alert" hidden></p>
+  <div id="notices" aria-live="polite"></div>
+
+  <main data-page="voice" class="voice">
+    <section class="you" id="you">
+      <div class="talk-ring" id="ring" aria-hidden="true"></div>
+      <div>
+        <h1 id="species">Checking your species…</h1>
+        <p id="rule" class="muted"></p>
+        <p id="talk-hint" class="small"></p>
+      </div>
+      <button class="btn" id="mute" aria-pressed="false">Mute microphone</button>
+    </section>
+
+    <section id="choose" hidden>
+      <label for="species-pick">This server is in test mode. Pick your species:</label>
+      <select id="species-pick"></select>
+      <form id="pos-form" class="row">
+        <label for="pos-x">Test position, in metres</label>
+        <input id="pos-x" type="number" step="any" placeholder="X" aria-label="X"><input id="pos-y" type="number" step="any" placeholder="Y" aria-label="Y">
+        <button class="btn">Set position</button>
+      </form>
+    </section>
+
+    <section class="cols">
+      <div>
+        <h2>Voice group</h2>
+        <div id="group-none" class="stack">
+          <p class="muted">Group up in the game, then share one code here so the same players can hear each other.</p>
+          <button class="btn primary" id="group-create">Start a group</button>
+          <form id="join-form" class="join">
+            <label for="code">Or join with a code</label>
+            <div class="row"><input id="code" type="text" maxlength="6" autocomplete="off" spellcheck="false" placeholder="ABC234"><button class="btn">Join group</button></div>
+          </form>
+        </div>
+        <div id="group-in" class="stack" hidden>
+          <p class="muted small">Share this code with your group:</p>
+          <div class="row"><output id="group-code" class="code"></output><button class="btn" id="copy-code">Copy code</button></div>
+          <ul id="members" class="people"></ul>
+          <button class="btn quiet" id="group-leave">Leave group</button>
+        </div>
+      </div>
+      <div>
+        <h2>Who you can talk to</h2>
+        <ul id="people" class="people"></ul>
+        <p id="people-empty" class="muted"></p>
+      </div>
+    </section>
+  </main>
+
+  <main data-page="settings" class="settings" hidden>
+    <section>
+      <h2>Microphone</h2>
+      <label for="mic">Device</label>
+      <select id="mic"></select>
+      <span class="label">How to talk</span>
+      <div class="segmented" role="group" aria-label="How to talk">
+        <button class="seg" id="mode-ptt">Push to talk</button>
+        <button class="seg" id="mode-voice">Voice activated</button>
+      </div>
+      <div id="ptt-row">
+        <span class="label">Push-to-talk key</span>
+        <button class="btn key" id="ptt-key"></button>
+      </div>
+      <div id="vad-row">
+        <label for="threshold">Start sending when your voice is louder than the marker</label>
+        <div class="meter"><div id="level"></div><input id="threshold" type="range" min="0" max="100"></div>
+      </div>
+    </section>
+    <section id="server-settings">
+      <h2>Voice server</h2>
+      <p class="muted">The app connects to this server by itself when it starts. Change the address or port here to use a different server.</p>
+      <p class="small">Connected to <strong id="current-server"></strong></p>
+      <form id="switch-form" class="stack">
+        <div class="server-row">
+          <div><label for="set-server">Address</label><input id="set-server" type="text" placeholder="voice.example.com" list="recent-servers" required></div>
+          <div><label for="set-port">Port</label><input id="set-port" type="number" min="1" max="65535" placeholder="7777"></div>
+        </div>
+        <p class="muted small">Leave the port empty if voice uses the same port as the game (7777). Otherwise use the port your server's admins gave you.</p>
+        <button class="btn">Connect to this server</button>
+      </form>
+    </section>
+    <section>
+      <h2>Call key</h2>
+      <p class="muted">When you start talking, the app presses your in-game call key so your dinosaur calls, like the game's own voice chat.</p>
+      <p class="notice" id="call-warning"><strong>Off by default in this alpha.</strong> Turning it on makes the app send a key press into your game, the way keyboard macro software does. It has not been tested with The Isle's anti-cheat, so use it at your own risk.</p>
+      <p id="call-off" class="notice" hidden></p>
+      <label class="check"><input type="checkbox" id="call-on"> Press my call key when I start talking</label>
+      <div>
+        <span class="label">Call key (set this to match your game's key binding)</span>
+        <button class="btn key" id="call-key"></button>
+      </div>
+      <div class="field">
+        <label for="cooldown">Wait at least this many seconds between calls</label>
+        <input id="cooldown" type="number" min="0" max="60" step="0.5">
+      </div>
+    </section>
+  </main>
+
+  <main data-page="look" hidden>
+    <h2>Colours</h2>
+    <p class="muted">Drag the circle on the wheel to pick a base colour, then choose a harmony of 2 to 5 colours.</p>
+    <div id="wheel" class="panel"></div>
+  </main>
+</div>
+
+<div class="version" id="version"></div>
+<div id="audio"></div>
+<script src="renderer.js"></script>
+</body>
+</html>

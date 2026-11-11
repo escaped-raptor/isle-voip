@@ -1,0 +1,21 @@
+{
+  "name": "isle-voip-server",
+  "version": "0.2.7",
+  "releaseStage": "Alpha",
+  "description": "Species Specific VoIP (The Isle Evrima) - voice server",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "acme-client": "^5.4.0",
+    "express": "^4.21.0",
+    "mediasoup": "^3.15.0",
+    "ws": "^8.18.0"
+  }
+}
