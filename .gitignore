@@ -1,0 +1,15 @@
+node_modules/
+server/data/
+server/config.json
+client/dist/
+client/release/
+dist/
+*.log
+.DS_Store
+server-app/stage/
+server-app/release/
+server-app/node_modules
+# Installers you build are big binaries: never commit them.
+*.exe
+*.AppImage
+*.dmg
