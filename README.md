@@ -6,6 +6,8 @@ Species-specific, proximity-based voice chat for [The Isle](https://store.steamp
 
 ![Talk rules in the admin panel](docs/admin-rules.png)
 
+Disclaimer: This modification (mod) is fan-made and unofficial. It is not created, distributed, endorsed, or supported by Afterthought LLC. All original game content, assets, and trademarks remain the property of their respective owners. Installing and using this mod is done at your own risk, and the creators are not responsible for any game crashes, data loss, or account actions resulting from its use.
+
 ## Try the demo
 
 See the server setup, the admin panel and the player client before installing anything. The demo uses made-up players and a pretend server, and nothing in it is saved or sent anywhere.
