@@ -25,7 +25,7 @@ The demo is built from the same screens the real apps use, so what you see is wh
 
 **Setup is one file.** On Windows, double-click `setup.bat` in the `Windows-Installers` folder; on Linux, run `bash Linux-Installers/setup.sh`. It checks for Node.js, offers to install it, and downloads what the client or server needs. No installers are published; the project is distributed as source code, and the guides also explain how to build an installer yourself if you want one.
 
-Both parts always carry the same version number, shown in the bottom-left corner of their screens. Keep the server and the clients on the same version. The current release is **v0.3.0 (Beta)**.
+Both parts always carry the same version number, shown in the bottom-left corner of their screens. Keep the server and the clients on the same version. The current release is **v0.3.2 (Beta)**.
 
 Both guides have instructions for Windows, Linux and macOS.
 
@@ -41,10 +41,10 @@ Source: <https://github.com/escaped-raptor/isle-voip>
 | Custom species | Add, rename, re-categorise or remove species under Carnivore, Herbivore and Omnivore, each with its own optional rule. |
 | Admin panel | A web page served by the voice server. No game client or mod needed. |
 | Colour themes | A colour wheel with a draggable handle and harmonies of 2, 3, 4 or 5 colours, in both the admin panel and the player client. |
-| Call key | When a player starts talking (push to talk or voice activated), the client can press the game's call key, F by default, like the game's own voice chat. It is **off by default**: each player turns it on for themselves. Server owners can disallow it for everyone, and players can rebind it. |
+| Call key | When a player starts talking (push to talk or voice activated), the client can press the game's call key, F by default. The game has text chat only, and a dinosaur calls when its player writes in it; this gives voice the same effect. It is **off by default**: each player turns it on for themselves. Server owners can disallow it for everyone, and players can rebind it. |
 | Secure by default | Connections use HTTPS. Bring a certificate from any publicly trusted provider (self-signed ones are refused), or let the server get a free one automatically. The server guide lists free and paid providers. |
 | One-file setup | `setup.bat` in `Windows-Installers` and `setup.sh` in `Linux-Installers` install what's needed and let you choose client, server or both. `start-client` and `start-server` files then launch them. |
-| Push to talk on any key | Hold a key or mouse button to talk. The default is **F**, the game's own call key, so talking makes your dinosaur call the way the game's built-in voice chat does. Change it in the client's Settings. Voice activation is the alternative. |
+| Push to talk on any key | Hold a key or mouse button to talk. The default is **F**, the game's own call key, so talking makes your dinosaur call. The game itself has text chat only, and a dinosaur calls when its player writes in it; F as the talk key mimics that for voice. This keeps things fair: voice chat apps outside the game let players talk without making a sound in the game, which is an unfair stealth advantage. Change it in the client's Settings. Voice activation is the alternative. |
 | Installers you build yourself | The project can package the client and the server app as Windows, Linux and macOS installers. None are published; you build them from the source if you want them. |
 | Server app with first-run setup | The server runs as a desktop app with a tray icon. The first time, it asks a few questions in a window (address, port, certificate, admin password) instead of making you edit a config file. |
 | Finds the server by itself | The client assumes the voice service is on the same port number as the game (7777), remembers the server, and reconnects when it starts. Address and port can be changed in its Settings. |
@@ -155,7 +155,7 @@ node scripts/bump-version.mjs
 
 The last digit counts from 0 to 9, then the middle number goes up and the last digit starts again: v0.2.3, v0.2.4 … v0.2.9, v0.3.0, v0.3.1 and so on. The script updates the server, the server app and the client together, and both GUIs show the number in their bottom-left corner.
 
-The stage shown after the number, as in "v0.3.0 (Beta)", comes from the `releaseStage` field in `server/package.json` and `client/package.json`. Bumping the version keeps it. Change it, or delete the field, in both files when the project moves on.
+The stage shown after the number, as in "v0.3.2 (Beta)", comes from the `releaseStage` field in `server/package.json` and `client/package.json`. Bumping the version keeps it. Change it, or delete the field, in both files when the project moves on.
 
 Contributions are welcome, especially confirmed RCON reply samples from current Evrima builds and Windows test reports.
 

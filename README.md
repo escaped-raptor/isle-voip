@@ -2,7 +2,7 @@
 
 Species-specific, proximity-based voice chat for [The Isle](https://store.steampowered.com/app/376210/The_Isle/) Evrima community servers. Players only hear their own kind, in their group, when they are close together in the game. Server owners set the rules in a browser admin panel.
 
-**Status: v0.3.0 (Beta).** Source code only, no installers. The author runs it on Windows 11 with a live Isle Evrima server, server and client, and it works there. Linux has only been tested without the game, and macOS not at all, so expect rough edges. Feedback is encouraged: please open an issue.
+**Status: v0.3.2 (Beta).** Source code only, no installers. The author runs it on Windows 11 with a live Isle Evrima server, server and client, and it works there. Linux has only been tested without the game, and macOS not at all, so expect rough edges. Feedback is encouraged: please open an issue.
 
 ![Talk rules in the admin panel](docs/admin-rules.png)
 
@@ -12,6 +12,10 @@ See the server setup, the admin panel and the player client before installing an
 
 - Online: <https://escaped-raptor.github.io/isle-voip/demo/Species-Specific-VoIP-Demo.html>
 - Or download this repository and open `demo/Species-Specific-VoIP-Demo.html` in a browser.
+
+## Why it exists
+
+The Isle Evrima has text chat only, and a dinosaur makes its call when its player writes in it, so talking gives your position away. Voice chat apps outside the game let players talk in silence, which is an unfair stealth advantage. Here, the default talk key is F, the game's call key, so speaking makes your dinosaur call just as typing does.
 
 ## Quick start
 

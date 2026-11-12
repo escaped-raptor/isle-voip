@@ -172,11 +172,11 @@ Windows installers built from v0.2.6 were run on Windows 11 and installed and st
 2. Spawn in the game. Your species appears within a few seconds.
 3. Group up in the game, then one player presses **Start a group** and shares the code. The others type it under **Join group**.
 4. Stay close. You only hear group members who are within the server's hearing range, and they get quieter as they move away.
-5. Talk. Hold **F** to talk: that is the default push-to-talk key, and because F is also the game's call key, your dinosaur calls as you speak, like the game's own voice chat. To use a different key or mouse button (mouse 3 to 5), open **Settings**, click the key button and press the one you want. Or choose voice activated, with an adjustable level.
+5. Talk. Hold **F** to talk: that is the default push-to-talk key, and because F is also the game's call key, your dinosaur calls as you speak. The game only has text chat, and your dinosaur calls when you write in it; this does the same for voice. This keeps things fair: voice chat apps outside the game let players talk without making a sound in the game, which is an unfair stealth advantage. To use a different key or mouse button (mouse 3 to 5), open **Settings**, click the key button and press the one you want. Or choose voice activated, with an adjustable level.
 
 ## Call key
 
-When you start talking, the app can press your in-game call key so your dinosaur calls, like the game's own voice chat.
+When you start talking, the app can press your in-game call key so your dinosaur calls, the way it does when you type in the game's text chat.
 
 **You may not need it.** With push to talk on its default key, F, you are already pressing the game's call key yourself each time you talk, so the call happens naturally and the app sends nothing to the game. The call key press below is for voice activation, or for when you have moved push to talk to another key.
 

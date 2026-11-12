@@ -13,7 +13,7 @@ const DEFAULTS = {
   server: '',
   mode: 'ptt', // ptt | voice
   // F is also the game's own call key, so holding it to talk makes your dinosaur call,
-  // the way the game's built-in voice chat does. Change it under Settings.
+  // the way it does when its player writes in the game's text chat. Change it under Settings.
   pttKey: desktop ? { kind: 'key', code: KEY_F, name: 'F' } : { kind: 'web', code: 'KeyF', name: 'F' },
   threshold: 35,
   callEnabled: false, // off until a player turns it on: see the warning beside the setting
@@ -444,7 +444,7 @@ function updateTalking() {
   if (want) pressCallKey();
 }
 
-// Press the in-game call key when talking starts, like the game's own voice chat.
+// Press the in-game call key when talking starts, like it does when the player writes in the game's text chat.
 function pressCallKey() {
   if (!desktop || !state?.callMacro.enabled || !cfg.callEnabled) return;
   // If push-to-talk already IS the call key, the game has received the press itself.
