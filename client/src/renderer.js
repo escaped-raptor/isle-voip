@@ -8,12 +8,13 @@ const $$ = (sel) => [...document.querySelectorAll(sel)];
 
 // uiohook key codes for the desktop defaults
 const KEY_F = 33;
-const KEY_V = 47;
 
 const DEFAULTS = {
   server: '',
   mode: 'ptt', // ptt | voice
-  pttKey: desktop ? { kind: 'key', code: KEY_V, name: 'V' } : { kind: 'web', code: 'KeyV', name: 'V' },
+  // F is also the game's own call key, so holding it to talk makes your dinosaur call,
+  // the way the game's built-in voice chat does. Change it under Settings.
+  pttKey: desktop ? { kind: 'key', code: KEY_F, name: 'F' } : { kind: 'web', code: 'KeyF', name: 'F' },
   threshold: 35,
   callEnabled: false, // off until a player turns it on: see the warning beside the setting
   callKey: { kind: 'key', code: KEY_F, name: 'F' },

@@ -8,6 +8,7 @@ For what the project does and its known limits, see the [project overview](../Re
 
 ## Contents
 
+- [Quick setup](#quick-setup)
 - [The server app](#the-server-app)
 - [First-run setup](#first-run-setup)
 - [What you need](#what-you-need)
@@ -23,11 +24,43 @@ For what the project does and its known limits, see the [project overview](../Re
 - [Security](#security)
 - [Troubleshooting](#troubleshooting)
 
+## Quick setup
+
+The easiest way to get the server onto a computer.
+
+**Windows**
+
+1. Download the project: on the GitHub page press **Code → Download ZIP**, then right-click the zip and choose **Extract All**.
+2. Open the extracted folder, open the **`Windows-Installers`** folder inside it, and double-click **`setup.bat`**.
+3. If Node.js isn't installed, it offers to install it for you. Type `Y` and press Enter.
+4. Choose **2** for the server, or **3** to try the server and client together on one PC.
+5. Wait while it downloads what it needs (a few minutes, about 300 MB each).
+6. Double-click **`start-server.bat`** in the same `Windows-Installers` folder. The server opens in a window and shows the [first-run setup](#first-run-setup) page.
+
+`setup-server.bat` does the same without asking which part you want. Setup has been tested on Windows and works.
+
+**Linux** (and macOS)
+
+```bash
+bash Linux-Installers/setup.sh
+```
+
+It does the same job: checks for Node.js, offers the command to install it if it's missing, then asks whether to set up the client, the server or both.
+
+Then start it:
+
+```bash
+bash Linux-Installers/start-server.sh              # window and tray icon
+bash Linux-Installers/start-server.sh --no-window  # for a server with no desktop
+```
+
+Setup is safe to run more than once, and it installs nothing outside the project folder except Node.js itself. It hides npm's harmless "deprecated" notices about build tools, so anything it does print is worth reading. The rest of this guide explains what the server app does, the setup questions, and the manual route for those who prefer a terminal.
+
 ## The server app
 
 The server app runs the voice server as a normal desktop program with a window and a tray icon, and shows the [first-run setup](#first-run-setup) page the first time, so there is no config file to edit.
 
-**No ready-made installer is published.** Run the app from source, or build an installer yourself:
+[Quick setup](#quick-setup) above installs and starts it for you. By hand, or to build an installer yourself:
 
 ```bash
 cd server

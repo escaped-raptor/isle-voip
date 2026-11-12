@@ -8,6 +8,7 @@ You need the address of a voice server run by your Isle Evrima community. To run
 
 - [What you need](#what-you-need)
 - [Which system?](#which-system)
+- [Quick setup](#quick-setup)
 - [Getting the client](#getting-the-client)
 - [Connecting to a server](#connecting-to-a-server)
 - [When there is no voice service](#when-there-is-no-voice-service)
@@ -36,13 +37,40 @@ You need the address of a voice server run by your Isle Evrima community. To run
 | Voice, groups, colours | Yes | Yes | Yes |
 | Push to talk while the game has focus | Yes | Yes, on X11 (not Wayland) | Yes, after granting permissions |
 | Call key press | Yes | Yes, on X11 | Yes, after granting permissions |
-| Tested for this project | Starts on Windows 11 (from a self-built installer); connecting, push to talk and the call key not yet | Yes | Not yet |
+| Tested for this project | Starts on Windows 11 (from a self-built installer); `setup.bat` is tested on Windows and works; connecting, push to talk and the call key not yet | Yes, including `setup.sh` | Not yet |
 
 The voice server only connects players it can see spawned in the game under the same Steam account. So on a system the game doesn't run on, the client only works while the game is running on that account somewhere else, for example streamed from a Windows PC.
 
+## Quick setup
+
+The easiest way to get the client onto a computer.
+
+**Windows**
+
+1. Download the project: on the GitHub page press **Code → Download ZIP**, then right-click the zip and choose **Extract All**.
+2. Open the extracted folder, open the **`Windows-Installers`** folder inside it, and double-click **`setup.bat`**.
+3. If Node.js isn't installed, it offers to install it for you. Type `Y` and press Enter.
+4. Choose **1** for the client.
+5. Wait while it downloads what it needs (a few minutes, about 300 MB each).
+6. Double-click **`start-client.bat`**, in the same `Windows-Installers` folder, whenever you want to run it.
+
+`setup-client.bat` does the same without asking which part you want.
+
+**Linux** (and macOS)
+
+```bash
+bash Linux-Installers/setup.sh
+```
+
+It does the same job: checks for Node.js, offers the command to install it if it's missing, then asks whether to set up the client, the server or both.
+
+Then start it with `bash Linux-Installers/start-client.sh`. Global push to talk needs an X11 session; see [Which system?](#which-system)
+
+Setup is safe to run more than once, and it installs nothing outside the project folder except Node.js itself. It hides npm's harmless "deprecated" notices about build tools, so anything it does print is worth reading.
+
 ## Getting the client
 
-**No ready-made installer is published.** The client is distributed as source code. You can run it straight from source (see [Install from source](#install-from-source)) or build an installer for yourself and your players (see [Build an installer](#build-an-installer)).
+**No ready-made installer is published.** The client is distributed as source code. [Quick setup](#quick-setup) above is the easy way to run it. You can also install it by hand (see [Install from source](#install-from-source)) or build an installer for yourself and your players (see [Build an installer](#build-an-installer)).
 
 An installer built from this project contains the app, its runtime and every library it uses; asks only where to install; needs no administrator rights; and adds desktop and Start menu shortcuts. It is not code-signed, so Windows SmartScreen warns the first time: choose **More info → Run anyway**. Only run an installer from someone you trust, such as your server's admins.
 
@@ -144,11 +172,13 @@ Windows installers built from v0.2.6 were run on Windows 11 and installed and st
 2. Spawn in the game. Your species appears within a few seconds.
 3. Group up in the game, then one player presses **Start a group** and shares the code. The others type it under **Join group**.
 4. Stay close. You only hear group members who are within the server's hearing range, and they get quieter as they move away.
-5. Talk. Under **Settings** choose push to talk (V by default, any key or mouse 3–5) or voice activated with an adjustable level.
+5. Talk. Hold **F** to talk: that is the default push-to-talk key, and because F is also the game's call key, your dinosaur calls as you speak, like the game's own voice chat. To use a different key or mouse button (mouse 3 to 5), open **Settings**, click the key button and press the one you want. Or choose voice activated, with an adjustable level.
 
 ## Call key
 
 When you start talking, the app can press your in-game call key so your dinosaur calls, like the game's own voice chat.
+
+**You may not need it.** With push to talk on its default key, F, you are already pressing the game's call key yourself each time you talk, so the call happens naturally and the app sends nothing to the game. The call key press below is for voice activation, or for when you have moved push to talk to another key.
 
 **It is off by default.** Turning it on makes the app send a key press into your game, the way keyboard macro software does. It does not read or change the game, but it has not been tested with The Isle's anti-cheat, so whether to use it is your decision and your risk.
 

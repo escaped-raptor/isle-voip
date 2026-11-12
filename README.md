@@ -2,11 +2,9 @@
 
 Species-specific, proximity-based voice chat for [The Isle](https://store.steampowered.com/app/376210/The_Isle/) Evrima community servers. Players only hear their own kind, in their group, when they are close together in the game. Server owners set the rules in a browser admin panel.
 
-**Status: v0.2.7 (Alpha).** Source code only, no installers. It works in testing but has not yet been run against a live Isle Evrima server. Feedback is encouraged: please open an issue.
+**Status: v0.3.0 (Beta).** Source code only, no installers. It works in testing, including on Windows 11, but has not yet been run against a live Isle Evrima server, so expect rough edges. Feedback is encouraged: please open an issue.
 
 ![Talk rules in the admin panel](docs/admin-rules.png)
-
-Disclaimer: This modification (mod) is fan-made and unofficial. It is not created, distributed, endorsed, or supported by Afterthought LLC. All original game content, assets, and trademarks remain the property of their respective owners. Installing and using this mod is done at your own risk, and the creators are not responsible for any game crashes, data loss, or account actions resulting from its use.
 
 ## Try the demo
 
@@ -14,6 +12,13 @@ See the server setup, the admin panel and the player client before installing an
 
 - Online: <https://escaped-raptor.github.io/isle-voip/demo/Species-Specific-VoIP-Demo.html>
 - Or download this repository and open `demo/Species-Specific-VoIP-Demo.html` in a browser.
+
+## Quick start
+
+No command-line knowledge needed on Windows.
+
+- **Windows:** download this repository (**Code → Download ZIP**), extract it, open the **`Windows-Installers`** folder and double-click **`setup.bat`**. It installs what's needed and asks whether you want the client, the server or both. Then double-click `start-client.bat` or `start-server.bat` in the same folder. Setup has been tested on Windows and works.
+- **Linux:** run `bash Linux-Installers/setup.sh`, then `bash Linux-Installers/start-client.sh` or `bash Linux-Installers/start-server.sh`.
 
 ## Guides
 

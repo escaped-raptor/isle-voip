@@ -1,7 +1,7 @@
 {
   "name": "isle-voip-client",
-  "version": "0.2.7",
-  "releaseStage": "Alpha",
+  "version": "0.3.0",
+  "releaseStage": "Beta",
   "description": "Species Specific VoIP (The Isle Evrima) - player client",
   "license": "MIT",
   "author": "escaped-raptor",
