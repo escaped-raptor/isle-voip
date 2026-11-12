@@ -1,6 +1,6 @@
 {
   "name": "isle-voip-client",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "releaseStage": "Beta",
   "description": "Species Specific VoIP (The Isle Evrima) - player client",
   "license": "MIT",
@@ -10,15 +10,16 @@
   "scripts": {
     "build": "node build.mjs",
     "start": "node build.mjs && electron .",
-    "dist": "node build.mjs && electron-builder"
+    "dist": "node build.mjs && electron-builder",
+    "postinstall": "node -e \"require('fs').existsSync('node_modules/electron/install.js')&&require('./node_modules/electron/install.js')\""
   },
   "dependencies": {
     "uiohook-napi": "^1.5.4"
   },
   "devDependencies": {
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8",
-    "esbuild": "^0.24.0",
+    "electron": "^45.3.1",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.2",
     "mediasoup-client": "^3.7.17"
   },
   "build": {

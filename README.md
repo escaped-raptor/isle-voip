@@ -2,7 +2,7 @@
 
 Species-specific, proximity-based voice chat for [The Isle](https://store.steampowered.com/app/376210/The_Isle/) Evrima community servers. Players only hear their own kind, in their group, when they are close together in the game. Server owners set the rules in a browser admin panel.
 
-**Status: v0.3.2 (Beta).** Source code only, no installers. The author ran it on Windows 11 with a Isle Evrima server, server and client, and it works there. Linux has only been tested without the game, and macOS not at all, so expect rough edges. Feedback is encouraged: please open an issue.
+**Status: v0.3.3 (Beta).** Source code only, no installers. The author runs it on Windows 11 with a live Isle Evrima server, server and client, and it works there. This version (v0.3.3) has been checked on the same computer (localhost) and across a private network. It has not yet been checked over the public internet. Linux has only been tested without the game, and macOS not at all, so expect rough edges. Feedback is encouraged: please open an issue.
 
 ![Talk rules in the admin panel](docs/admin-rules.png)
 

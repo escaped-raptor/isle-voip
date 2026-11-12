@@ -37,7 +37,7 @@ You need the address of a voice server run by your Isle Evrima community. To run
 | Voice, groups, colours | Yes | Yes | Yes |
 | Push to talk while the game has focus | Yes | Yes, on X11 (not Wayland) | Yes, after granting permissions |
 | Call key press | Yes | Yes, on X11 | Yes, after granting permissions |
-| Tested for this project | Yes: set up with `setup.bat` and used on Windows 11 with a live Isle Evrima server | Yes, including `setup.sh`, but not with the game | Not yet |
+| Tested for this project | Yes: set up with `setup.bat` and used on Windows 11 with a live Isle Evrima server, on localhost and across a private network; not yet over the public internet | Yes, including `setup.sh`, but not with the game | Not yet |
 
 The voice server only connects players it can see spawned in the game under the same Steam account. So on a system the game doesn't run on, the client only works while the game is running on that account somewhere else, for example streamed from a Windows PC.
 
@@ -203,10 +203,11 @@ If the server owner has turned it on, you can open `https://your-server-address/
 - **Nobody sees your IP address.** Your audio goes to the voice server and nowhere else. You never connect to other players, and the server never tells anyone your address.
 - **Encrypted.** Sign-in and audio are encrypted between you and the server. The server forwards audio and does not record it.
 - **The app tells you if a connection is not secure.** While connected, the header shows **Secure** when the server is reached over HTTPS. If it is not, the header shows **Not secure** and a red banner stays on screen for as long as you are connected. A second line appears if the server is in testing mode, where players' identities are not verified. Real servers should always show Secure.
-- **Steam sign-in.** You sign in on Steam's own page. The app and the voice server never see your Steam password; the server only learns your SteamID.
-- **What other players see.** Only players you can talk to see your in-game name and species. Your SteamID is shown to the server's admins, not to other players.
+- **Steam sign-in.** You sign in on Steam's own page. The app and the voice server never see your Steam password; the server only learns your SteamID. In the desktop client, the sign-in window is opened straight from Steam, can only show Steam's own sites, and is hidden the moment Steam hands back to the voice server, so a voice server cannot show you a look-alike Steam page. Its title bar always reads "Steam sign-in (steamcommunity.com)".
+- **What other players see.** Only players you can talk to see your in-game name and species. Until the game supplies your name you appear as "Player" and four random characters, which contain no part of your SteamID. Your SteamID is shown to the server's admins, not to other players.
 - **Desktop client.** The page runs sandboxed with no Node.js access. No password is ever stored.
-- **Stay signed in.** With this ticked, the voice server's sign-in token (not a password) is saved on your computer, encrypted by the operating system for your user account. It lasts 30 days. Untick it, or press **Sign out**, to remove it.
+- **Your keyboard.** To make push to talk work while the game has focus, the app is told about key presses by the operating system. It only checks whether the key is your talk key. Nothing you type is recorded, saved or sent anywhere.
+- **Stay signed in.** With this ticked, the voice server's sign-in token (not a password) is saved on your computer, encrypted by the operating system for your user account. On Linux with no keyring, where proper encryption isn't available, it is not saved at all and you sign in each time. It lasts 30 days. Untick it, or press **Sign out**, to remove it.
 - **The call key.** Off unless you turn it on. When on, the app sends an ordinary key press to your computer, the way keyboard macro software does. It does not read or change the game. It has not been tested in-game, and whether the game's anti-cheat accepts synthetic key presses is not something this project can promise.
 
 ## Troubleshooting

@@ -27,8 +27,11 @@ const logFile = () => path.join(dataRoot(), 'server.log');
 
 function log(...parts) {
   const line = parts.join(' ');
+  // A password must never end up in a file. The first-run admin password is
+  // shown on screen only; the log keeps a note that one was created.
+  const forFile = line.replace(/(admin password is:)\s*\S+/i, '$1 (not written to this log)');
   try {
-    fs.appendFileSync(logFile(), `${new Date().toISOString()} ${line}\n`);
+    fs.appendFileSync(logFile(), `${new Date().toISOString()} ${forFile}\n`);
   } catch {}
   console.log(line);
 }

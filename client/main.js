@@ -42,6 +42,12 @@ function serverOrigin(input) {
 // operating system for this user account (DPAPI on Windows, Keychain on macOS).
 // If the system can't encrypt, nothing is saved.
 
+// On Linux with no keyring, Electron falls back to a fixed built-in key, which
+// hides nothing. That does not count as encryption here.
+const canEncrypt = () => {
+  if (!safeStorage.isEncryptionAvailable()) return false;
+  return !(process.platform === 'linux' && safeStorage.getSelectedStorageBackend?.() === 'basic_text');
+};
 const sessions = () => {
   const s = readConfig().sessions;
   return s && typeof s === 'object' ? s : {};
@@ -49,14 +55,14 @@ const sessions = () => {
 ipcMain.handle('session:load', (_e, server) => {
   try {
     const saved = sessions()[server];
-    if (!saved || !safeStorage.isEncryptionAvailable()) return null;
+    if (!saved || !canEncrypt()) return null;
     return safeStorage.decryptString(Buffer.from(saved, 'base64'));
   } catch {
     return null;
   }
 });
 ipcMain.handle('session:save', (_e, server, token) => {
-  if (!safeStorage.isEncryptionAvailable() || typeof token !== 'string') return false;
+  if (!canEncrypt() || typeof token !== 'string') return false;
   const origin = serverOrigin(server);
   const all = sessions();
   delete all[origin];
@@ -125,27 +131,88 @@ ipcMain.handle('keys:tap', async (_e, code) => {
 
 // ---- Steam sign-in -----------------------------------------------------------
 
-ipcMain.handle('auth:steam', (_e, server) => new Promise((resolve, reject) => {
-  let origin;
-  try { origin = serverOrigin(server); } catch (err) { return reject(err); }
-  const login = new BrowserWindow({
-    width: 520, height: 760, parent: win, modal: true, autoHideMenuBar: true,
-    webPreferences: { partition: 'persist:steam-login', sandbox: true, contextIsolation: true, nodeIntegration: false }
+// The Steam page is opened straight from Steam by this app, never by way of the
+// voice server, and the window may only show Steam's own sites. A voice server
+// therefore cannot put a look-alike sign-in page in front of the player. When
+// Steam hands the result back to the voice server the window is hidden, so
+// nothing the server sends is ever displayed in it.
+const STEAM_OPENID = 'https://steamcommunity.com/openid/login';
+function isSteamUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.protocol === 'https:' && /(^|\.)(steamcommunity\.com|steampowered\.com)$/.test(u.hostname);
+  } catch {
+    return false;
+  }
+}
+function steamLoginUrl(returnBase) {
+  return `${STEAM_OPENID}?${new URLSearchParams({
+    'openid.ns': 'http://specs.openid.net/auth/2.0',
+    'openid.mode': 'checkid_setup',
+    'openid.return_to': `${returnBase}/auth/steam/return`,
+    'openid.realm': returnBase,
+    'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
+    'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select'
+  })}`;
+}
+/** Where a page in the sign-in window is: 'steam' (show it), 'server' (hide it) or 'other' (refuse it). */
+function placeOf(url, bases) {
+  if (isSteamUrl(url)) return 'steam';
+  return bases.some((b) => String(url).startsWith(`${b}/`)) ? 'server' : 'other';
+}
+
+ipcMain.handle('auth:steam', async (_e, server) => {
+  const origin = serverOrigin(server);
+  // The server says which address Steam should send the player back to.
+  let returnBase = origin;
+  try {
+    const info = await (await fetch(`${origin}/api/info`, { signal: AbortSignal.timeout(8000) })).json();
+    if (info?.publicUrl) returnBase = serverOrigin(info.publicUrl);
+  } catch { /* keep the address the player typed */ }
+  const bases = [...new Set([origin, returnBase])];
+
+  return new Promise((resolve, reject) => {
+    const login = new BrowserWindow({
+      width: 520, height: 760, parent: win, modal: true, autoHideMenuBar: true,
+      title: 'Steam sign-in (steamcommunity.com)',
+      webPreferences: { partition: 'persist:steam-login', sandbox: true, contextIsolation: true, nodeIntegration: false }
+    });
+    let settled = false;
+    const finish = (fn, value) => {
+      if (settled) return;
+      settled = true;
+      fn(value);
+      if (!login.isDestroyed()) login.close();
+    };
+    const tokenIn = (url) => {
+      if (!bases.some((b) => String(url).startsWith(`${b}/auth-done.html`))) return null;
+      return new URLSearchParams(new URL(url).hash.slice(1)).get('token');
+    };
+    const guard = (event, url) => {
+      const token = tokenIn(url);
+      if (token) return finish(resolve, token);
+      const place = placeOf(url, bases);
+      if (place === 'server') login.hide();
+      else if (place === 'other') event.preventDefault();
+    };
+    login.on('page-title-updated', (e) => e.preventDefault()); // the title always names Steam
+    login.webContents.on('will-navigate', guard);
+    login.webContents.on('will-redirect', guard);
+    login.webContents.on('did-navigate', (_event, url) => {
+      const token = tokenIn(url);
+      if (token) finish(resolve, token);
+    });
+    login.webContents.on('did-finish-load', () => {
+      const at = login.webContents.getURL();
+      const token = tokenIn(at);
+      if (token) return finish(resolve, token);
+      if (placeOf(at, bases) === 'server') finish(reject, new Error('The server could not confirm the Steam sign-in. Try again.'));
+    });
+    login.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    login.on('closed', () => settled || reject(new Error('Sign-in window closed.')));
+    login.loadURL(steamLoginUrl(returnBase));
   });
-  let settled = false;
-  const check = (_event, url) => {
-    const at = typeof url === 'string' ? url : login.webContents.getURL();
-    if (!at.startsWith(`${origin}/auth-done.html`)) return;
-    const token = new URLSearchParams(new URL(at).hash.slice(1)).get('token');
-    if (token && !settled) { settled = true; resolve(token); login.close(); }
-  };
-  login.webContents.on('will-redirect', check);
-  login.webContents.on('did-navigate', check);
-  login.webContents.on('did-finish-load', () => check());
-  login.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  login.on('closed', () => settled || reject(new Error('Sign-in window closed.')));
-  login.loadURL(`${origin}/auth/steam`);
-}));
+});
 
 // ---- window ------------------------------------------------------------------
 

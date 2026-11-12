@@ -4,6 +4,10 @@ import crypto from 'node:crypto';
 import { canTalk as rulesAllow, compatibleSpecies, effectiveRule, fadeGain, getSpecies, matchSpecies } from './policy.js';
 
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no look-alikes (0/O, 1/I/L)
+// A stand-in name for a player the game has not named yet. It is stable for
+// one player while the server runs, and gives away no part of their SteamID.
+const nameSalt = crypto.randomBytes(16);
+const standInName = (steamId) => `Player ${crypto.createHmac('sha256', nameSalt).update(steamId).digest('hex').slice(0, 4).toUpperCase()}`;
 const newCode = () => Array.from(crypto.randomBytes(6), (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join('');
 
 export class Hub {
@@ -59,7 +63,7 @@ export class Hub {
     const peer = {
       id: crypto.randomBytes(8).toString('hex'),
       steamId,
-      name: `Player ${steamId.slice(-4)}`,
+      name: standInName(steamId),
       send,
       close,
       closed: false,

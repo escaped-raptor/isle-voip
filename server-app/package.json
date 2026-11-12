@@ -1,6 +1,6 @@
 {
   "name": "isle-voip-server-app",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "releaseStage": "Beta",
   "description": "Species Specific VoIP (The Isle Evrima) - server app",
   "license": "MIT",
@@ -10,11 +10,12 @@
   "scripts": {
     "stage": "node build.mjs",
     "start": "electron .",
-    "dist": "node build.mjs && electron-builder"
+    "dist": "node build.mjs && electron-builder",
+    "postinstall": "node -e \"require('fs').existsSync('node_modules/electron/install.js')&&require('./node_modules/electron/install.js')\""
   },
   "devDependencies": {
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8"
+    "electron": "^45.3.1",
+    "electron-builder": "^26.18.0"
   },
   "build": {
     "appId": "io.github.escaped-raptor.isle-voip-server",

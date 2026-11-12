@@ -25,7 +25,7 @@ The demo is built from the same screens the real apps use, so what you see is wh
 
 **Setup is one file.** On Windows, double-click `setup.bat` in the `Windows-Installers` folder; on Linux, run `bash Linux-Installers/setup.sh`. It checks for Node.js, offers to install it, and downloads what the client or server needs. No installers are published; the project is distributed as source code, and the guides also explain how to build an installer yourself if you want one.
 
-Both parts always carry the same version number, shown in the bottom-left corner of their screens. Keep the server and the clients on the same version. The current release is **v0.3.2 (Beta)**.
+Both parts always carry the same version number, shown in the bottom-left corner of their screens. Keep the server and the clients on the same version. The current release is **v0.3.3 (Beta)**.
 
 Both guides have instructions for Windows, Linux and macOS.
 
@@ -49,7 +49,7 @@ Source: <https://github.com/escaped-raptor/isle-voip>
 | Server app with first-run setup | The server runs as a desktop app with a tray icon. The first time, it asks a few questions in a window (address, port, certificate, admin password) instead of making you edit a config file. |
 | Finds the server by itself | The client assumes the voice service is on the same port number as the game (7777), remembers the server, and reconnects when it starts. Address and port can be changed in its Settings. |
 | Quiet when there is no voice service | If the server isn't running this service the client stays silent, checks again a few times at growing intervals, then stops. It never floods a server or interrupts the game. |
-| Privacy | All audio is relayed through the server and encrypted. Players never connect to each other, so nobody can see anybody else's IP address. |
+| Privacy | All audio is relayed through the server and encrypted. Players never connect to each other, so nobody can see anybody else's IP address. Passwords are never stored by the client, and the Steam sign-in window can only show Steam's own sites. |
 
 ## How it works
 
@@ -79,7 +79,7 @@ These are real limits, not fine print.
 4. **The RCON reply format is undocumented.** The parser looks for a 17-digit ID, a `Class:` field and a `Location: X=… Y=… Z=…` field in each player record and ignores the rest. Positions are assumed to be in Unreal units of 1 cm (100 per metre, changeable). It is tested against sample replies, not yet against a live Evrima server. Use **Species check → Test connection** in the admin panel: it shows the raw reply and what the parser understood. If your server's build replies differently, please open an issue with that output.
 5. **The call key press is synthetic input, and is off by default.** When a player turns it on, the client sends an ordinary key press to the operating system, the way keyboard macro software does. It does not read or modify the game. It has not been tested in-game, and whether the game's anti-cheat accepts synthetic key presses is not something this project can promise, which is why each player has to switch it on themselves. Server owners can also disallow it for everyone.
 6. **Steam sign-in and Legacy saves are untested against the real thing.** The Steam OpenID check is covered by tests with a stand-in for Steam, and the Legacy save reader expects a `CharacterClass` field in each `<SteamID64>.json`. Neither has been run against live Steam or a live Legacy server yet.
-7. **Platforms tested.** The author has run the server and the client on Windows 11 with a live Isle Evrima server, set up with `setup.bat`, and it works there. Beyond that one setup, real-world testing is still thin. The server, the admin panel, the first-run setup, the server app, the web client and the desktop client have been tested end to end on Linux, including real audio between browsers. Installers built from v0.2.6 were run on Windows 11: both apps install and start, and the server's first-run setup and admin panel work there. On Linux, nothing has been tried with the game itself. The Linux `setup.sh` and `start` files have been run for real. Nothing has been run on macOS. Linux and macOS installers have never been built or run.
+7. **Platforms tested.** The author has run the server and the client on Windows 11 with a live Isle Evrima server, set up with `setup.bat`, and it works there. v0.3.3 was checked this way on the same computer (localhost) and across a private network; it has not yet been checked over the public internet. Beyond that one setup, real-world testing is still thin. The server, the admin panel, the first-run setup, the server app, the web client and the desktop client have been tested end to end on Linux, including real audio between browsers. Installers built from v0.2.6 were run on Windows 11: both apps install and start, and the server's first-run setup and admin panel work there. On Linux, nothing has been tried with the game itself. The Linux `setup.sh` and `start` files have been run for real. Nothing has been run on macOS. Linux and macOS installers have never been built or run.
 8. **Automatic HTTPS is untested against the live service.** The server can get and renew a free Let's Encrypt certificate by itself. Everything around that has been tested (checking certificates, renewal timing, error messages), but the exchange with Let's Encrypt itself has not been run yet. Bringing your own certificate from a trusted provider is the tested route.
 9. **The default species list** covers 17 Evrima playables. If the game reports a class that isn't in your list, the admin panel's Players page shows it with one-click buttons to add it.
 
@@ -155,7 +155,7 @@ node scripts/bump-version.mjs
 
 The last digit counts from 0 to 9, then the middle number goes up and the last digit starts again: v0.2.3, v0.2.4 … v0.2.9, v0.3.0, v0.3.1 and so on. The script updates the server, the server app and the client together, and both GUIs show the number in their bottom-left corner.
 
-The stage shown after the number, as in "v0.3.2 (Beta)", comes from the `releaseStage` field in `server/package.json` and `client/package.json`. Bumping the version keeps it. Change it, or delete the field, in both files when the project moves on.
+The stage shown after the number, as in "v0.3.3 (Beta)", comes from the `releaseStage` field in `server/package.json` and `client/package.json`. Bumping the version keeps it. Change it, or delete the field, in both files when the project moves on.
 
 Contributions are welcome, especially confirmed RCON reply samples from current Evrima builds and Windows test reports.
 
