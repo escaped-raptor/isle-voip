@@ -37,7 +37,7 @@ You need the address of a voice server run by your Isle Evrima community. To run
 | Voice, groups, colours | Yes | Yes | Yes |
 | Push to talk while the game has focus | Yes | Yes, on X11 (not Wayland) | Yes, after granting permissions |
 | Call key press | Yes | Yes, on X11 | Yes, after granting permissions |
-| Tested for this project | Starts on Windows 11 (from a self-built installer); `setup.bat` is tested on Windows and works; connecting, push to talk and the call key not yet | Yes, including `setup.sh` | Not yet |
+| Tested for this project | Yes: set up with `setup.bat` and used on Windows 11 with a live Isle Evrima server | Yes, including `setup.sh`, but not with the game | Not yet |
 
 The voice server only connects players it can see spawned in the game under the same Steam account. So on a system the game doesn't run on, the client only works while the game is running on that account somewhere else, for example streamed from a Windows PC.
 
