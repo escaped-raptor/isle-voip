@@ -19,9 +19,9 @@ The Isle Evrima has text chat only, and a dinosaur makes its call when its playe
 
 ## Quick start
 
-No command-line knowledge needed on Windows.
+One file sets everything up, and it is tested and working on both systems: `setup.bat` on Windows 11 and `setup.sh` on Linux. No command-line knowledge needed on Windows.
 
-- **Windows:** download this repository (**Code → Download ZIP**), extract it, open the **`Windows-Installers`** folder and double-click **`setup.bat`**. It installs what's needed and asks whether you want the client, the server or both. Then double-click `start-client.bat` or `start-server.bat` in the same folder. Setup has been tested on Windows and works.
+- **Windows:** download this repository (**Code → Download ZIP**), extract it, open the **`Windows-Installers`** folder and double-click **`setup.bat`**. It installs what's needed and asks whether you want the client, the server or both. Then double-click `start-client.bat` or `start-server.bat` in the same folder.
 - **Linux:** run `bash Linux-Installers/setup.sh`, then `bash Linux-Installers/start-client.sh` or `bash Linux-Installers/start-server.sh`.
 
 ## Guides
